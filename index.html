@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>David M. · Applied AI for regulated work</title>
+<meta name="description" content="Case studies: AI tools built for work where a wrong answer has consequences. Cited answers, dates computed by code, a person signing before anything is official.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f4d3f'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='17' fill='%23fff' text-anchor='middle'%3EDM%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#faf8f3; --panel:#fffefb; --ink:#1c1f1d; --soft:#565d58; --line:#e2ddd0;
+  --accent:#1f4d3f; --accent-ink:#fff; --tint:#eef2ec; --mark:#b4532a;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121513; --panel:#191d1a; --ink:#ecebe5; --soft:#a4aba5; --line:#2c322e;
+    --accent:#8fd0b6; --accent-ink:#10231c; --tint:#1d2521; --mark:#e2946b; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;line-height:1.16;margin:0;text-wrap:balance}
+p{margin:0 0 1em;text-wrap:pretty}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.narrow{max-width:720px}
+
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px}
+.name{font-family:"Iowan Old Style",Georgia,serif;font-weight:600;font-size:19px;color:var(--ink);text-decoration:none}
+nav{display:flex;gap:20px;font-size:15px;flex-wrap:wrap}
+nav a{color:var(--soft);text-decoration:none}
+nav a:hover{color:var(--accent)}
+
+.hero{padding:72px 0 56px}
+.hero h1{font-size:clamp(34px,5.6vw,58px);max-width:17ch;letter-spacing:-.01em}
+.hero .lede{font-size:clamp(18px,2.2vw,21px);color:var(--soft);max-width:60ch;margin-top:22px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 10px;margin:26px 0 0;padding:0;list-style:none;font-size:14.5px}
+.facts li{border:1px solid var(--line);border-radius:999px;padding:5px 13px;background:var(--panel);color:var(--soft)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-block;padding:11px 18px;border-radius:9px;font-weight:600;font-size:15.5px;text-decoration:none;border:1px solid var(--accent)}
+.btn.solid{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{color:var(--accent)}
+
+.index{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel)}
+.index ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.index li{padding:20px 18px;border-left:1px solid var(--line)}
+.index li:first-child{border-left:0}
+.index a{text-decoration:none;color:var(--ink);display:block}
+.index b{display:block;font-family:"Iowan Old Style",Georgia,serif;font-size:17.5px}
+.index span{display:block;font-size:14px;color:var(--soft);line-height:1.4;margin-top:4px}
+@media (max-width:640px){.index li{border-left:0;border-top:1px solid var(--line)}.index li:first-child{border-top:0}}
+
+section{padding:64px 0}
+.kicker{font-size:13px;letter-spacing:.11em;text-transform:uppercase;color:var(--mark);font-weight:700;margin-bottom:10px}
+h2{font-size:clamp(27px,3.6vw,38px)}
+.sub{color:var(--soft);font-size:19px;margin-top:10px;max-width:62ch}
+
+.case{border-top:1px solid var(--line)}
+.case .head{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
+.shot{margin:30px 0 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:0 14px 40px -24px rgba(0,0,0,.35)}
+.shot .bar{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);align-items:center}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.shot .bar em{font-style:normal;font-size:12.5px;color:var(--soft);margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shot img{display:block;width:100%;height:auto}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:34px}
+@media (max-width:820px){.cols{grid-template-columns:1fr;gap:22px}}
+.cols h3{font-family:inherit;font:700 13px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+.cols p,.cols li{font-size:16px}
+.cols ul{margin:0;padding-left:1.1em}
+.cols li{margin-bottom:.45em}
+.rule{margin:34px 0 0;padding:20px 24px;border-left:4px solid var(--accent);background:var(--tint);border-radius:0 10px 10px 0;font-family:"Iowan Old Style",Georgia,serif;font-size:clamp(19px,2.3vw,23px);line-height:1.38}
+.links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:24px;font-size:15.5px;font-weight:600}
+.meta{font-size:14.5px;color:var(--soft);margin-top:12px}
+
+.how{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:34px}
+.card{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--bg)}
+.card h3{font-size:19.5px;margin-bottom:8px}
+.card p{font-size:16px;color:var(--soft);margin:0}
+
+.more{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 34px;margin-top:26px}
+.more div{padding:16px 0;border-top:1px solid var(--line)}
+.more b{display:block}
+.more span{color:var(--soft);font-size:15.5px}
+
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--soft);font-size:14.5px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="#top">David M.</a>
+    <nav>
+      <a href="#work">Case studies</a>
+      <a href="#how">How I work</a>
+      <a href="#about">About</a>
+      <a href="https://github.com/DTM-repo">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap hero">
+  <h1>AI tools for work where a wrong answer has consequences.</h1>
+  <p class="lede">I have spent 17 years in international education, most of it keeping schools and students on the right side of federal immigration rules. For the last two years I have been building AI tools for that kind of work: rule-heavy, document-heavy, and unforgiving of a confident guess.</p>
+  <ul class="facts">
+    <li>Higher-ed operations and compliance</li>
+    <li>J.D.</li>
+    <li>Five products live</li>
+    <li>Three hackathon builds in 2026</li>
+  </ul>
+  <div class="cta">
+    <a class="btn solid" href="#work">Read the case studies</a>
+    <a class="btn ghost" href="https://github.com/DTM-repo">See the code on GitHub</a>
+  </div>
+</div>
+
+<div class="index">
+  <div class="wrap">
+    <ol>
+      <li><a href="#mapper"><b>F-1 Duration Mapper</b><span>A new federal rule, applied to one student's own case</span></a></li>
+      <li><a href="#listens"><b>Henry Listens</b><span>A live meeting becomes the written compliance record</span></a></li>
+      <li><a href="#henryknows"><b>HenryKnows</b><span>Cited answers over 500+ primary regulatory sources</span></a></li>
+      <li><a href="#onthebooks"><b>On the Books</b><span>The local law of 10,000 American towns, in plain English</span></a></li>
+      <li><a href="#context"><b>Context OS</b><span>One set of notes that every AI tool can read</span></a></li>
+    </ol>
+  </div>
+</div>
+
+<div id="work">
+
+<section class="case" id="mapper">
+  <div class="wrap">
+    <div class="kicker">Case study 1 · OpenAI Build Week entry</div>
+    <h2>F-1 Duration Mapper</h2>
+    <p class="sub">In July 2026 a federal rule replaced the open-ended stay international students had always had with fixed end dates. Every student suddenly needed to know what that meant for their own plans.</p>
+
+    <figure class="shot">
+      <div class="bar"><i></i><i></i><i></i><em>durationofstatuschanges.netlify.app</em></div>
+      <img src="img/mapper.png" alt="F-1 Duration Mapper opening screen: F-1 status no longer comes with an open-ended stay. Tell us your situation, or type instead." loading="lazy" width="1440" height="900">
+    </figure>
+
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <p>The rule runs to hundreds of pages, and the answer depends on each student's dates, degree level, work authorization and travel. A general-purpose chatbot will happily produce a date. It may be wrong, and a wrong date here can cost someone their legal status.</p>
+      </div>
+      <div>
+        <h3>What I built</h3>
+        <p>A student tells their story by voice or text. The tool shows what it understood, asks for the one missing fact that would change the answer, draws the controlling dates on a timeline, and produces a report in the style an adviser would write, with every statement linked to its source.</p>
+      </div>
+      <div>
+        <h3>How it stays right</h3>
+        <ul>
+          <li>The model only extracts candidate facts. The student confirms or corrects each one.</li>
+          <li>Dates and legal consequences come from ordinary code, so the same facts always give the same result.</li>
+          <li>The model may explain a result. It cannot change one.</li>
+          <li>It refuses ambiguous dates such as 6/2/2029 and never invents an exact day.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="rule">A model never calculates a legal result. It reads, it asks, it explains. Code does the arithmetic the student's status depends on.</p>
+
+    <div class="links">
+      <a href="https://durationofstatuschanges.netlify.app">Try it live →</a>
+      <a href="https://github.com/DTM-repo/f1-fixed-period-planner">Read the code →</a>
+    </div>
+    <p class="meta">Built in four days. TypeScript, OpenAI API, Netlify.</p>
+  </div>
+</section>
+
+<section class="case" id="listens">
+  <div class="wrap">
+    <div class="kicker">Case study 2 · Meta Global AI Developer Hackathon entry</div>
+    <h2>Henry Listens</h2>
+    <p class="sub">An advising appointment should end in a written record: what the student said, what the regulation says, what was advised, and what has to happen next. That record is the first thing cut when the line is out the door.</p>
+
+    <figure class="shot">
+      <div class="bar"><i></i><i></i><i></i><em>henry-listens.netlify.app</em></div>
+      <img src="img/listens.png" alt="Henry Listens mid-appointment: two issue cards, one flagged because the work dates run past the program end, beside a column of dates marked calculated." loading="lazy" width="1440" height="900">
+    </figure>
+
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <p>The note is what a school stands on in a federal review, and writing it competes with the next student waiting. Recording the meeting and handing it to a model raises a harder question: a student's name and ID numbers would be going to an outside company.</p>
+      </div>
+      <div>
+        <h3>What I built</h3>
+        <p>The tool sits in on the meeting and builds the record while people talk. Issues appear as cards, each with its regulation. Dates land on a calendar. A conflict, such as work dates running past the end of the program, shows up in red and clears when the adviser resolves it.</p>
+      </div>
+      <div>
+        <h3>How it stays safe</h3>
+        <ul>
+          <li>Names and ID numbers are replaced in code before any model hears a word.</li>
+          <li>A citation counts only if that exact source came back from a search in the same session. Anything else is marked unverified.</li>
+          <li>Every date comes from a date engine, tagged with the rule it applied.</li>
+          <li>Nothing can be exported until the adviser and student review each card and the adviser signs.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="rule">The model drafts and cites. Code computes every consequence. The adviser decides.</p>
+
+    <div class="links">
+      <a href="https://henry-listens.netlify.app">Watch the sample appointment →</a>
+      <a href="https://youtu.be/A8ubsFDvebA">Two-minute video →</a>
+      <a href="https://github.com/DTM-repo/henry-listens">Read the code →</a>
+    </div>
+    <p class="meta">Built solo in ten days on Meta's speech and agent models. The demo uses synthetic voices and an invented student.</p>
+  </div>
+</section>
+
+<section class="case" id="henryknows">
+  <div class="wrap">
+    <div class="kicker">Case study 3 · Live product, free to use</div>
+    <h2>HenryKnows</h2>
+    <p class="sub">A reference tool for the people who advise international students. It answers regulatory questions and shows the regulation or agency guidance behind every answer.</p>
+
+    <figure class="shot">
+      <div class="bar"><i></i><i></i><i></i><em>henryknows.info</em></div>
+      <img src="img/henryknows.png" alt="HenryKnows answering a question about the post-completion work authorization deadline, with regulation citations in the answer." loading="lazy" width="1440" height="900">
+    </figure>
+
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <p>The rules live in federal regulations, agency manuals, policy memos and court orders, and they have changed month to month in 2026. An adviser needs the current answer and needs to be able to check it. A general chatbot gives neither.</p>
+      </div>
+      <div>
+        <h3>What I built</h3>
+        <p>A library of more than 500 primary sources, a search layer over it, and an answer that quotes and links what it relied on. It is also available inside Claude and ChatGPT as a connector, so an adviser can ask from the assistant they already use.</p>
+      </div>
+      <div>
+        <h3>What I had to get right</h3>
+        <ul>
+          <li>Before changing the answer engine, I graded old and new answers blind on a fixed set of questions. The new one shipped only after it won.</li>
+          <li>A watcher checks the Federal Register and agency pages every four hours and drafts the update for me to review.</li>
+          <li>OpenAI's review rejected the ChatGPT version three times. The fix that passed was a redesign: the tools that answer questions now store nothing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="rule">If the answer cannot show its source, it is not an answer an adviser can use.</p>
+
+    <div class="links">
+      <a href="https://henryknows.info">Ask it a question →</a>
+      <a href="https://henryknows.info/connect/">Use it from Claude or ChatGPT →</a>
+      <a href="https://github.com/DTM-repo/henryknows-webmcp">A browser-agent version (WebMCP Challenge) →</a>
+    </div>
+    <p class="meta">Anthropic API with streaming answers, Netlify Functions, an MCP connector (MCP is the open standard that lets an AI assistant use an outside tool).</p>
+  </div>
+</section>
+
+<section class="case" id="onthebooks">
+  <div class="wrap">
+    <div class="kicker">Case study 4 · Live product</div>
+    <h2>On the Books</h2>
+    <p class="sub">Can you build that fence, keep those chickens, rent out that room? The answer is in your town's municipal code, which almost nobody can find or read.</p>
+
+    <figure class="shot">
+      <div class="bar"><i></i><i></i><i></i><em>onthebooks.org</em></div>
+      <img src="img/onthebooks.png" alt="On the Books home page: the local codes of 10,129 towns. Pick your town, ask about any rule, answers cite the actual code." loading="lazy" width="1440" height="900">
+    </figure>
+
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <p>Local law is published town by town, by a handful of different publishers, in formats built for clerks. The same method that worked for federal immigration rules should work here, but at a very different size: thousands of separate law books instead of one.</p>
+      </div>
+      <div>
+        <h3>What I built</h3>
+        <p>One place to search and ask questions of the code of more than 10,000 American towns. Every answer cites chapter and section and links to the town's official published code. It can also compare one question across two or three towns.</p>
+      </div>
+      <div>
+        <h3>What I had to get right</h3>
+        <ul>
+          <li>Coverage is stated as an exact count on the home page, and unknown is shown as unknown.</li>
+          <li>Every answer costs money to produce, so each plan and each anonymous visitor has a quota.</li>
+          <li>The visitor counter separates people from automated crawlers, because most traffic to a new site is not people.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="rule">The same discipline, proven outside my own field: quote the law, cite the section, link the official source.</p>
+
+    <div class="links">
+      <a href="https://onthebooks.org">Ask your town's code →</a>
+      <a href="https://onthebooks.org/developers/">Connector for AI assistants →</a>
+    </div>
+  </div>
+</section>
+
+<section class="case" id="context">
+  <div class="wrap">
+    <div class="kicker">Case study 5 · Open source</div>
+    <h2>Context OS and manifest.md</h2>
+    <p class="sub">Every new chat starts from zero. People who use several AI tools end up re-explaining who they are and what they are working on, many times a day.</p>
+
+    <figure class="shot">
+      <div class="bar"><i></i><i></i><i></i><em>readthemanifest.net</em></div>
+      <img src="img/manifest.png" alt="manifest.md home page" loading="lazy" width="1440" height="900">
+    </figure>
+
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <p>Each AI product keeps its own memory, and none of them share. I run my own projects across Claude, ChatGPT and Codex, and needed all of them to start from the same understanding without a twenty-message warm-up.</p>
+      </div>
+      <div>
+        <h3>What I built</h3>
+        <p>Context OS is a small set of plain text files plus rules for which ones to load and in what order. Any AI tool can read them. manifest.md is the same idea for non-technical people: one private link that lets Claude or ChatGPT read your notes and save new facts to them.</p>
+      </div>
+      <div>
+        <h3>The decisions that matter</h3>
+        <ul>
+          <li>It is only files. No app to install, nothing to depend on, and the notes stay yours.</li>
+          <li>The server behind the link is three small files, published so anyone can read exactly what it does.</li>
+          <li>I built it because I needed it, then published it when I kept seeing other people ask for the same thing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://github.com/DTM-repo/Context-OS">Context OS on GitHub →</a>
+      <a href="https://github.com/DTM-repo/manifest-mcp">The server's code →</a>
+      <a href="https://readthemanifest.net">manifest.md →</a>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="kicker">How I work</div>
+    <h2>The same six rules show up in everything above.</h2>
+    <div class="grid">
+      <div class="card"><h3>Model for judgment, code for consequence</h3><p>A model reads, drafts and explains. Anything a person will be held to, such as a date, a deadline or a legal classification, is computed by ordinary code that gives the same result every time.</p></div>
+      <div class="card"><h3>Show the source or say you cannot</h3><p>Every regulatory statement links to the text it came from. A citation the system cannot trace to a real search result is labeled unverified, not quietly kept.</p></div>
+      <div class="card"><h3>Private details never reach the model</h3><p>Names and ID numbers are replaced in code first. Demos use invented people. None of the products on this page was built on real student records.</p></div>
+      <div class="card"><h3>A person signs</h3><p>These tools draft. They do not file, send or decide. The professional reviews the draft and puts their name on it, and nothing leaves before that.</p></div>
+      <div class="card"><h3>Test against my own labeled examples</h3><p>I grade a system against examples I labeled by hand. One tool went from 53% to 76% agreement that way. A later version also scored 76% and was worse. Only reading its written reasons showed it.</p></div>
+      <div class="card"><h3>Unattended work must fail loudly</h3><p>Anything that runs on a schedule needs a tested alarm. I keep a register of every scheduled job, what it is for, and whether it ran, after one failed quietly for weeks.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="more">
+  <div class="wrap">
+    <div class="kicker">Also built</div>
+    <h2>Smaller pieces</h2>
+    <div class="more">
+      <div><b><a href="https://github.com/DTM-repo/skills">Ron Draper</a></b><span>A published skill for Claude and Codex that finds the one idea in a product's name and builds a brand kit around it. On the Books was named with it.</span></div>
+      <div><b><a href="https://github.com/DTM-repo/salience">Salience</a></b><span>A research prototype of an AI that works while you are still thinking out loud, with a fast model listening and a stronger one analyzing.</span></div>
+      <div><b><a href="https://github.com/DTM-repo/henryknows-webmcp">HenryKnows + WebMCP</a></b><span>Lets a student's own browser agent work through a case with HenryKnows and a tested rules engine. Built for the WebMCP Challenge.</span></div>
+      <div><b><a href="https://dtm-repo.github.io/visa-wait-dash/">Visa wait dashboard</a></b><span>U.S. visa interview wait times worldwide, refreshed automatically from the State Department's published figures.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="about" style="border-top:1px solid var(--line)">
+  <div class="wrap narrow">
+    <div class="kicker">About</div>
+    <h2>Compliance first, then AI.</h2>
+    <p style="margin-top:18px">My career is in higher-education operations and immigration compliance: running a school, building compliance programs from scratch, and serving as the federally designated official responsible for international students' records. I hold a J.D. Before that I produced and reported for public radio.</p>
+    <p>I am not a software engineer and do not claim to be. Claude and Codex write the code. I decide what the code should do, design how the pieces fit, set the rules it must never break, and test that it holds. In regulated work, those are the decisions that determine whether a tool can be trusted.</p>
+    <p>What I bring to an AI team is the view from inside the work: I know what a wrong answer costs, what a reviewer will ask for, and what a busy professional will and will not use.</p>
+    <div class="cta">
+      <a class="btn solid" href="https://github.com/DTM-repo">GitHub: DTM-repo</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Products named here are independent projects. They are not affiliated with or endorsed by any employer, and nothing on this page is legal advice.</div>
+</footer>
+
+</body>
+</html>

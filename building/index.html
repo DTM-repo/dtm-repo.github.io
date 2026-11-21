@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building · David M.</title>
+<meta name="description" content="How a non-developer specifies, tests, connects and runs AI tools in production.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f4d3f'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='17' fill='%23fff' text-anchor='middle'%3EDM%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="/">David M.</a>
+    <nav>
+      <a href="/">Case studies</a>
+      <a href="/enablement/">Enablement</a>
+      <a class="on" href="/building/">Building</a>
+      <a href="/#about">About</a>
+      <a href="https://github.com/DTM-repo">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="wrap page-hero">
+  <div class="kicker">Building and overseeing tools</div>
+  <h1>Directing an AI build without being a developer.</h1>
+  <p class="lede" style="font-size:clamp(18px,2.2vw,21px);color:var(--soft);max-width:62ch;margin-top:22px">I do not write the code. AI models do. My part is the part a team still needs a person for: deciding what gets built, writing the rules it may never break, testing that it holds, and keeping it running once nobody is watching.</p>
+  <ul class="facts">
+    <li>Five products live</li>
+    <li>Published in ChatGPT's app directory</li>
+    <li>Three MCP servers in production</li>
+    <li>Three model vendors used directly</li>
+  </ul>
+</div>
+
+<section class="case" id="method">
+  <div class="wrap">
+    <div class="kicker">Method</div>
+    <h2>How a build goes.</h2>
+    <ol class="steps">
+      <li><b>Write what it must never do</b><span>Before features, the hard rules in plain language: a model never computes a date, a name never reaches the model, nothing is sent without a person's sign-off.</span></li>
+      <li><b>One model builds, another attacks it</b><span>Claude writes the code. A second model reviews it as an adversary, looking for what breaks. I settle the disagreements.</span></li>
+      <li><b>Test on real cases, read the reasons</b><span>I grade the system against examples I labeled by hand, and I read why it answered as it did. A good score can hide a wrong reason.</span></li>
+      <li><b>Check the live thing</b><span>Done means I watched it work end to end where users will meet it. A passing test or a green status is not that.</span></li>
+      <li><b>Give every unattended job an alarm</b><span>Anything on a schedule is listed in one register with its purpose and its last run, and it has to fail loudly.</span></li>
+      <li><b>Know the bill</b><span>Each answer costs money to produce. I keep a cost map of every paid service, and every public feature has a usage limit.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="case" id="connect">
+  <div class="wrap">
+    <div class="kicker">Integrations</div>
+    <h2>Built to be used from inside the AI assistants people already have.</h2>
+    <p class="sub">Most people will not visit one more website. So each product is also a connector: something Claude, ChatGPT or a browser agent can call on its own, with the same sources and the same rules.</p>
+    <div class="grid">
+      <div class="card"><h3>A published ChatGPT app</h3><p>HenryKnows passed OpenAI's review and is listed in ChatGPT's app directory. The reviewed design separates tools that only read from tools that write, labels each one, and keeps no copy of a question or an answer.</p></div>
+      <div class="card"><h3>Three MCP servers in production</h3><p>MCP is the open standard that lets an AI assistant use an outside tool. HenryKnows, On the Books and manifest.md each run one, so Claude or ChatGPT can search the sources, get a cited answer, or read and update a person's notes.</p></div>
+      <div class="card"><h3>One connector, three AI vendors</h3><p>The same HenryKnows connector is called by Claude, by ChatGPT, and by the agent in Henry Listens, which runs on Meta's models. The sources and citations are identical whichever model is asking.</p></div>
+      <div class="card"><h3>WebMCP: a browser agent on the page</h3><p>WebMCP lets a website offer its functions directly to the AI agent in a visitor's browser. My challenge build lets a student's own agent work a case with HenryKnows and a tested rules engine.</p></div>
+      <div class="card"><h3>Agent-to-agent</h3><p>HenryKnows also answers over A2A, a protocol that lets one company's AI agent hand a question to another's. It is open, with a daily limit as the only gate.</p></div>
+      <div class="card"><h3>Model APIs, used directly</h3><p>Anthropic for streamed, cited answers. OpenAI for fact extraction and long-running report jobs. Meta for live speech with speaker labels and an agent that calls tools in parallel. Each chosen for the job, not by habit.</p></div>
+    </div>
+    <div class="links">
+      <a href="https://henryknows.info/connect/">Add HenryKnows to Claude or ChatGPT →</a>
+      <a href="https://onthebooks.org/developers/">On the Books for developers →</a>
+      <a href="https://github.com/DTM-repo/manifest-mcp">Read an MCP server's code →</a>
+    </div>
+  </div>
+</section>
+
+<section class="case" id="evaluate">
+  <div class="wrap">
+    <div class="kicker">Evaluation</div>
+    <h2>Two tests I would repeat on any team.</h2>
+    <div class="split">
+      <div>
+        <h3>A blind comparison before a switch</h3>
+        <p>Before moving HenryKnows to a new answer engine, I ran old and new on the same fixed set of questions and graded the answers without knowing which was which. The new engine went live only after it won.</p>
+      </div>
+      <div>
+        <h3>Hand labels, and reading the reasons</h3>
+        <p>For a ranking tool, I labeled the examples myself and measured agreement: 53% at first, 76% after a rewrite. A later version also scored 76% and was worse, because it had started penalizing the wrong thing. The number did not show it. The written reasons did.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case" id="operate">
+  <div class="wrap">
+    <div class="kicker">Operations</div>
+    <h2>Keeping it right after launch.</h2>
+    <p class="sub">A reference tool about regulations is wrong the day the regulation changes. So the upkeep is automated, with a person at the point where judgment is needed.</p>
+    <div class="grid g2">
+      <div class="card"><h3>A rule-change watcher</h3><p>Every four hours it checks the Federal Register and agency pages for anything touching international students, drafts the update with its source, and puts it in front of me for review. When a court order lands, the site can reflect it the same morning.</p></div>
+      <div class="card"><h3>A security sweep</h3><p>Each morning an agent checks published security advisories against what my projects depend on and applies the safe fixes, with a log of what it changed.</p></div>
+      <div class="card"><h3>A workflow watcher</h3><p>Every six hours another agent checks each automated job, re-runs or repairs what failed, and only brings me in when a decision is needed.</p></div>
+      <div class="card"><h3>Real visitors, not crawlers</h3><p>Most traffic to a new site is automated. My analytics separate people from machines before I draw any conclusion from a number.</p></div>
+    </div>
+    <div class="cta">
+      <a class="btn solid" href="/#work">See the products this runs</a>
+      <a class="btn ghost" href="/enablement/">Enablement samples</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Products named here are independent projects. They are not affiliated with or endorsed by any employer, and nothing on this page is legal advice.</div>
+</footer>
+
+</body>
+</html>

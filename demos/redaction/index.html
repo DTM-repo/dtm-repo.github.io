@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redaction demo · David M.</title>
+<meta name="description" content="A working demo: remove personal details before an AI sees the text, block anything that slips through, and put the real values back afterward.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f4d3f'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='17' fill='%23fff' text-anchor='middle'%3EDM%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="/">David M.</a>
+    <nav>
+      <a href="/">Case studies</a>
+      <a href="/enablement/">Enablement</a>
+      <a href="/building/">Building</a>
+      <a href="/#about">About</a>
+      <a href="https://github.com/DTM-repo">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<style>
+.demo{display:grid;gap:22px;margin-top:30px}
+.stepbox{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:22px}
+.stepbox>h3{font-size:21px;display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.stepbox>h3 i{font-style:normal;flex:none;width:30px;height:30px;line-height:30px;text-align:center;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:700 14px/30px -apple-system,sans-serif}
+.stepbox>p.h{color:var(--soft);font-size:15.5px;margin:0 0 14px}
+.demo textarea{width:100%;font:14.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:14px;resize:vertical}
+.demo label{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:14px 0 6px}
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.pick button,.act{font:600 14.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.pick button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.act{border-radius:9px;border-color:var(--accent);color:var(--accent)}
+.act.solid{background:var(--accent);color:var(--accent-ink)}
+.act[disabled]{opacity:.45;cursor:not-allowed}
+.act.small{padding:6px 10px;font-size:13.5px}
+.view{white-space:pre-wrap;word-wrap:break-word;font:14.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;min-height:60px}
+.tok{background:var(--tint);color:var(--accent);border:1px solid var(--accent);border-radius:5px;padding:0 4px;font-weight:600;white-space:nowrap}
+.back{background:#fde9c8;color:#5b3a00;border-radius:4px;padding:0 3px}
+.leak{background:#f8d2cc;color:#7a1c10;border-radius:4px;padding:0 3px;font-weight:700}
+@media (prefers-color-scheme: dark){.back{background:#4a3a14;color:#f6dfa9}.leak{background:#5a221b;color:#ffcfc7}}
+.gate{border-radius:10px;padding:14px 16px;margin-top:14px;font-size:15.5px;border:1px solid}
+.gate.pass{border-color:#2e7d5b;background:rgba(46,125,91,.12)}
+.gate.block{border-color:#b3402e;background:rgba(179,64,46,.12)}
+.gate b{display:block;margin-bottom:4px}
+.gate ul{list-style:none;margin:10px 0 0;padding:0}
+.gate li{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.gate li span{flex:1;min-width:200px}
+table.ledger{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+table.ledger th,table.ledger td{text-align:left;padding:7px 10px 7px 0;border-top:1px solid var(--line);vertical-align:top}
+table.ledger th{color:var(--soft);font-weight:600;font-size:13px}
+table.ledger td:first-child{font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.row small{color:var(--soft);font-size:14px}
+.cols2{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+.stepbox,.cols2>div{min-width:0}
+.demo{grid-template-columns:minmax(0,1fr)}
+table.ledger{table-layout:fixed}
+table.ledger td{word-break:break-word}
+table.ledger td:first-child{white-space:normal}
+.tok{white-space:normal}
+@media (max-width:820px){.cols2{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap page-hero" style="padding-bottom:10px">
+  <div class="kicker">Working demo</div>
+  <h1>Take the person out. Run the AI. Put the person back.</h1>
+  <p class="lede" style="font-size:clamp(18px,2.2vw,21px);color:var(--soft);max-width:64ch;margin-top:22px">The safest way to use AI on records about real people is to make sure the AI never sees who they are. This page does that in four steps, and you can try it with your own text.</p>
+  <p class="note">Everything here runs inside your browser. Nothing you type is sent anywhere, and no AI is connected to this page. The people in the samples are invented.</p>
+</div>
+
+<div class="wrap" style="padding-bottom:30px">
+<div class="demo">
+
+  <div class="stepbox">
+    <h3><i>1</i>The original text</h3>
+    <p class="h">Pick a sample or paste your own. The list on the right is the people you already know are in your records, such as a class roster or a staff list.</p>
+    <div class="pick" id="pick">
+      <button data-s="email" aria-pressed="true">Applicant email</button>
+      <button data-s="hr" aria-pressed="false">Staff note</button>
+      <button data-s="own" aria-pressed="false">Your own text</button>
+    </div>
+    <div class="cols2">
+      <div><label for="orig">Text</label><textarea id="orig" rows="13" spellcheck="false"></textarea></div>
+      <div><label for="roster">People on your list, one per line</label><textarea id="roster" rows="13" spellcheck="false"></textarea></div>
+    </div>
+  </div>
+
+  <div class="stepbox">
+    <h3><i>2</i>What the AI is allowed to see</h3>
+    <p class="h">Rules written in code swap each identifying detail for a placeholder. Then a gate checks what is left. If anything still looks like a person or an ID, the text does not go out.</p>
+    <div class="view" id="red"></div>
+    <div id="gate"></div>
+    <label>The key, which never leaves your computer</label>
+    <table class="ledger"><thead><tr><th>Placeholder</th><th>Real value</th><th>What it is</th></tr></thead><tbody id="ledger"></tbody></table>
+  </div>
+
+  <div class="stepbox">
+    <h3><i>3</i>The AI does its work</h3>
+    <p class="h">Copy the safe version into Claude, Copilot or any assistant and ask for what you need. Paste its answer below. For the samples, an answer is already filled in.</p>
+    <div class="row">
+      <button class="act solid" id="copy">Copy the safe version</button>
+      <small id="copynote"></small>
+    </div>
+    <label for="ans">The AI's answer</label>
+    <textarea id="ans" rows="9" spellcheck="false" placeholder="Paste the assistant's answer here. It will still contain the placeholders."></textarea>
+  </div>
+
+  <div class="stepbox">
+    <h3><i>4</i>The real details go back in</h3>
+    <p class="h">The key turns each placeholder back into the real value, on your computer. If the answer contains a placeholder that was never issued, it is flagged instead of guessed.</p>
+    <div class="view" id="out"></div>
+    <div id="outnote"></div>
+  </div>
+
+</div>
+</div>
+
+<section class="case">
+  <div class="wrap">
+    <div class="kicker">Why it is built this way</div>
+    <h2>Four decisions behind the demo.</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Code decides what is identifying, not a model</h3><p>The swap is done by fixed rules and a list of known people. Asking an AI to find the private details would mean showing it the private details first.</p></div>
+      <div class="card"><h3>The same person always gets the same placeholder</h3><p>"Amara Osei" and a later "Amara" both become the same placeholder, so the AI can still follow who did what. It reasons about the case without knowing whose case it is.</p></div>
+      <div class="card"><h3>The gate assumes the rules missed something</h3><p>Rules and lists cannot know a name they have never seen. So a second check looks for anything name-shaped or number-shaped that survived, and stops the text until a person decides.</p></div>
+      <div class="card"><h3>The key stays local</h3><p>The table that maps placeholders to real values is never sent with the text. Without it, the safe version cannot be turned back into a record about anyone.</p></div>
+    </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div><h3>What this demo does not catch</h3><p>Street addresses, and names it has no reason to suspect, such as a single uncommon first name in the middle of a sentence. The next layer I would add is a small name-finding model that runs on the same computer, with these rules kept as the backstop.</p></div>
+      <div><h3>Where it is used for real</h3><p>This is the redaction step from <a href="/#listens">Henry Listens</a>, where a live meeting is transcribed and names and ID numbers are replaced before any model hears a word. <a href="https://github.com/DTM-repo/henry-listens/blob/main/relay/redact.mjs">Read that code →</a></p></div>
+    </div>
+  </div>
+</section>
+
+<script src="redact.js"></script>
+<script>
+(function(){
+  const {Redactor,gate,restore}=window.Redaction;
+  const $=id=>document.getElementById(id);
+  const SAMPLES={
+    email:{text:`From: Amara Osei <amara.osei@example.edu>
+Subject: Documents for my application
+
+Dear International Student Services,
+
+My name is Amara Osei. My SEVIS ID is N0012345678 and my student ID is 23456789. I was born 03/14/2003 and my passport number is G12345678.
+
+My sponsor, Kwame Mensah, sent the bank letter on October 30. Dr. Ansah in Computer Science signed my program form. You can call me at (555) 010-4477.
+
+Thank you,
+Amara`,
+      roster:'Amara Osei',
+      answer:[
+        ['Dear {Amara Osei},',[]],
+        ['',[]],
+        ['Thank you for your message. We have matched your documents to your record ({N0012345678}).',[]],
+        ['We received the bank letter from your sponsor, {Kwame Mensah}, dated October 30.',[]],
+        ['The program form signed by Dr. {Ansah} is also on file.',[]],
+        ['',[]],
+        ['One item is still missing: a copy of the passport photo page for passport {G12345678}. Please reply to this email with it attached. If we have questions we will call you at {(555) 010-4477}.',[]],
+        ['',[]],
+        ['International Student Services',[]]]},
+    hr:{text:`Staff note, November 12
+
+Spoke with Daniel Reyes (employee ID 4471902) about his leave paperwork. His manager, Priya Raman, approved the dates by email. Daniel asked that HR use his personal address, d.reyes@example.com, and his cell, 555-010-2231, while he is out.
+
+Payroll flagged a mismatch on the Social Security number ending the file: 000-12-3456. Need to confirm with Daniel before the 20th.`,
+      roster:'Daniel Reyes',
+      answer:[
+        ['Summary',[]],
+        ['- {Daniel Reyes} (employee ID {4471902}) has leave approved by his manager, {Priya Raman}.',[]],
+        ['- While he is out, contact him at {d.reyes@example.com} or {555-010-2231}.',[]],
+        ['',[]],
+        ['Open item',[]],
+        ['- Payroll found a mismatch on the Social Security number on file ({000-12-3456}). Confirm the correct number with {Daniel Reyes} before November 20.',[]]]},
+    own:{text:'',roster:'',answer:null}
+  };
+  let current='email', dismissed=new Set(), R=null, redacted='', answerTouched=false;
+
+  function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+  function sampleAnswer(){
+    const a=SAMPLES[current].answer; if(!a) return '';
+    const lines=[];
+    for(const [tpl] of a){
+      let ok=true;
+      const line=tpl.replace(/\{([^}]+)\}/g,(m,v)=>{const t=R.byValue.get(v.toLowerCase()); if(!t){ok=false;return m;} return t;});
+      if(ok) lines.push(line);
+    }
+    return lines.join('\n').replace(/\n{3,}/g,'\n\n');
+  }
+  function render(){
+    const names=$('roster').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    R=new Redactor(names);
+    redacted=R.redact($('orig').value);
+    const flags=gate(redacted,dismissed);
+    let html=esc(redacted).replace(/\[[A-Z_]+_\d+\]/g,t=>'<span class="tok">'+t+'</span>');
+    for(const f of flags){ html=html.split(esc(f.text)).join('<span class="leak">'+esc(f.text)+'</span>'); }
+    $('red').innerHTML=html||'<span style="color:var(--soft)">Paste some text in step 1.</span>';
+    const g=$('gate');
+    if(!$('orig').value.trim()){ g.innerHTML=''; }
+    else if(flags.length){
+      g.innerHTML='<div class="gate block"><b>Gate: stopped. '+flags.length+' thing'+(flags.length>1?'s':'')+' still to decide.</b>The text cannot be copied out until each one is handled.<ul>'+flags.map((f,i)=>'<li><span><span class="leak">'+esc(f.text)+'</span> '+f.why+'</span>'+(f.type==='name'?'<button class="act small" data-add="'+i+'">Add to my list</button>':'')+'<button class="act small" data-skip="'+i+'">'+(f.type==='name'?'Not a person':'Not an ID')+'</button></li>').join('')+'</ul></div>';
+      g.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const f=flags[+b.dataset.add]; $('roster').value=($('roster').value.trim()+'\n'+f.text).trim(); render();});
+      g.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{dismissed.add(flags[+b.dataset.skip].text.toLowerCase()); render();});
+    } else {
+      g.innerHTML='<div class="gate pass"><b>Gate: clear.</b>'+R.ledger.size+' detail'+(R.ledger.size===1?'':'s')+' replaced. Nothing left that looks like a person or an ID.</div>';
+    }
+    $('copy').disabled=flags.length>0||!redacted.trim();
+    $('copynote').textContent=flags.length?'Locked until the gate is clear.':'';
+    $('ledger').innerHTML=[...R.ledger].map(([t,v])=>'<tr><td><span class="tok">'+t+'</span></td><td>'+esc(v.value)+'</td><td>'+v.label+'</td></tr>').join('')||'<tr><td colspan="3" style="color:var(--soft)">Nothing replaced yet.</td></tr>';
+    if(!answerTouched) $('ans').value=flags.length?'':sampleAnswer();
+    renderOut(flags.length>0);
+  }
+  function renderOut(blocked){
+    const a=$('ans').value;
+    if(!a.trim()){ $('out').innerHTML='<span style="color:var(--soft)">'+(blocked?'Waiting for the gate in step 2.':'Waiting for an answer in step 3.')+'</span>'; $('outnote').innerHTML=''; return; }
+    const res=restore(a,R.ledger);
+    let html=esc(a).replace(/\[[A-Z_]+_\d+\]/g,t=>R.ledger.has(t)?'<span class="back">'+esc(R.ledger.get(t).value)+'</span>':'<span class="leak">'+t+'</span>');
+    $('out').innerHTML=html;
+    $('outnote').innerHTML=res.unknown.length?'<div class="gate block"><b>Check this before using it.</b>The answer used '+res.unknown.length+' placeholder'+(res.unknown.length>1?'s':'')+' that the key never issued ('+res.unknown.join(', ')+'). The AI made '+(res.unknown.length>1?'them':'it')+' up.</div>':'<div class="gate pass"><b>'+res.used.length+' placeholder'+(res.used.length===1?'':'s')+' restored.</b>The AI wrote this without ever seeing the highlighted details.</div>';
+  }
+  function load(k){
+    current=k; dismissed=new Set(); answerTouched=false;
+    $('orig').value=SAMPLES[k].text; $('roster').value=SAMPLES[k].roster; $('ans').value='';
+    document.querySelectorAll('#pick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===k));
+    render(); if(k==='own') $('orig').focus();
+  }
+  document.querySelectorAll('#pick button').forEach(b=>b.onclick=()=>load(b.dataset.s));
+  $('orig').oninput=()=>{ if(current!=='own'){ current='own'; document.querySelectorAll('#pick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s==='own')); answerTouched=true; $('ans').value=''; } render(); };
+  $('roster').oninput=render;
+  $('ans').oninput=()=>{answerTouched=true; renderOut(false);};
+  $('copy').onclick=async()=>{ try{ await navigator.clipboard.writeText(redacted); $('copynote').textContent='Copied. The key stayed here.'; }catch(e){ $('copynote').textContent='Select the text in step 2 and copy it.'; } };
+  load('email');
+})();
+</script>
+</main>
+
+<footer>
+  <div class="wrap">Products named here are independent projects. They are not affiliated with or endorsed by any employer, and nothing on this page is legal advice.</div>
+</footer>
+
+</body>
+</html>
